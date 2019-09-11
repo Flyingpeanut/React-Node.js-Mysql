@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <% include partial/head %>
+</head>
+<body>
+<% include partial/menu %><div class="container-fluid bg-3 text-center">
+  <h3><%= page %></h3><br>
+  <div class="row">
+    <div class="col-sm-4">
+      <p><%= content %></p>
+      <form class="registerForm" action="/register" method="post">
+          <input type="text" name="username" value="your username" required>
+          <input type="password" name="password" value="hidden" required>
+          <input type="text" name="name" value="name" required>
+          <input type="text" name="last_name" value="lastname" required>
+          <input type="text" name="mail" value="example@mail.com" required>
+          <input type="text" name="address" value="Sofokleous 262" required>
+          <input type="number" name="AFM" value="203023020" required>
+          <input type="text" name="country" value="GREECE" required>
+          <button type="submit">register</button>
+      </form>
+
+  </div>
+</div></body>
+<% include partial/scripts %>
+</html>
