@@ -16,18 +16,22 @@ var User = db.define('users', {
     },
     username: {
       type: Sequelize.STRING,
+      allowNull: false,
+
     },
     address: {
       type: Sequelize.STRING,
     },
     mail: {
       type: Sequelize.STRING,
+      allowNull: false,
     },
     country: {
       type: Sequelize.STRING,
     },
     password: {
       type: Sequelize.STRING,
+      allowNull: false,
     },
     aproved: {
       type: Sequelize.BOOLEAN,

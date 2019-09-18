@@ -3,44 +3,85 @@ process.title = 'apiApp';
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
+
 const cookieParser = require('cookie-parser');
+// helps with logging message during development
 const logger = require('morgan');
+// need for backend to communicate with frontend
 const cors = require("cors");
+
+// handles authentication
 const passport = require('passport');
+require('./config/auth').auth(passport)
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var testAPIRouter = require("./routes/testAPI");
-var authentication = require("./routes/authentication");
-var app = express();
+// handles sessions
+const expressSession = require('express-session');
+const flash = require('connect-flash')
+
+// routes
+const indexRouter = require('./routes/index');
+const authentication = require("./routes/authentication");
 
 
+const app = express();
+
+const expressLayouts = require('express-ejs-layouts')
+
+//app.use(expressLayouts)
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-app.use(cors());
+
+app.use(cors({
+  credentials: true,
+  origin: 'http://localhost:3000'
+}));
 app.use(logger('dev'));
+
+//body parser
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
+
+//session & cookieParser
 app.use(cookieParser());
+app.use(expressSession({
+    secret:'whatver',
+    resave:false,
+    saveUninitialized:false,
+    //cookie:{secure:true}
+}))
+
+// connect flash ( redirect messages)
+app.use(flash());
+
+// global variables for flash messages
+app.use((req,res,next) =>{
+    res.locals.success_msg = req.flash('success_msg')
+    res.locals.error_msg = req.flash('error_msg')
+    res.locals.user = req.flash('user')
+    next()
+
+})
+// need to be after express session
 app.use(passport.initialize());
+app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const db = require('./schema/model')
+const db = require('./models/model')
 
 db.authenticate()
 .then(() => console.log('connected'))
 .catch(err => console.log('error: '+ err))
+
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 app.use("/auth", authentication);
-app.use("/testAPI", testAPIRouter);
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
 });
-
+/*
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
@@ -51,5 +92,5 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error',{page:'Error', menuId:''});
 });
-
+*/
 module.exports = app;
