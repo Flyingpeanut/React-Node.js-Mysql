@@ -27,6 +27,7 @@ module.exports ={
         })
       );
 
+
       passport.serializeUser(function(user, done) {
 
         done(null, user.get());
@@ -53,7 +54,7 @@ module.exports ={
         if (req.isAuthenticated()) {
           return next();
         }
-        req.flash('error_msg', 'Please log in to view that resource');
+        console.log('error_msg', 'Please log in to view that resource');
         return res.status(200).send({logged_in: false, user: {}})
       },
       forwardAuthenticated: function(req, res, next) {
