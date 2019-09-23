@@ -22,6 +22,7 @@ const flash = require('connect-flash')
 const indexRouter = require('./routes/index');
 const authentication = require("./routes/authentication");
 const protected = require('./routes/protected')
+const search = require('./routes/search')
 
 const app = express();
 
@@ -74,6 +75,8 @@ const db = require('./models/seq')
 app.use('/', indexRouter);
 app.use("/auth", authentication);
 app.use("/protected", protected);
+app.use("/search", search);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

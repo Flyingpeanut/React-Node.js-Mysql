@@ -8,6 +8,7 @@ import Header from './components/layout/Header';
 import Auth from './components/login/Auth';
 import Home from './components/Home';
 import Dashboard from "./components/Dashboard";
+import Search from "./components/Search";
 import AdminPage from "./components/protectedRoute/AdminPage"
 import UserProfile from "./components/protectedRoute/UserProfile"
 
@@ -102,10 +103,18 @@ class App extends Component {
 								)}
 							 />
 							 <Switch>
+							 <Route
+							   exact path='/'
+							   render={(props) => (
+									 <Home {... props}
+									  handleLogin={this.handleLogin}
+									  loggedInStatus = {this.state.loggedInStatus}/>
+								 )}
+							 />
 							  <Route
-							    exact path='/'
+							    exact path='/search'
 								render={(props) => (
-									  <Home {... props}
+									  <Search {... props}
 									   handleLogin={this.handleLogin}
 									   loggedInStatus = {this.state.loggedInStatus}/>
 								  )}

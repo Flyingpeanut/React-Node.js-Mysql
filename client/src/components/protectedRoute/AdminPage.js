@@ -1,6 +1,5 @@
 import React from 'react';
 import axios from 'axios';
-import {List} from '../list/List'
 import {ListItemUser} from '../list/ListItemUser'
 import Switch from '../list/Switch'
 
