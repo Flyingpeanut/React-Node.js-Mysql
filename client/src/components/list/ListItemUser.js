@@ -4,7 +4,7 @@ import axios from 'axios';
 
 export const  ListItemUser = ({ user,liStyle,style2 }) => {
 
-    const [id, setId] = useState(user.user_id);
+    const [id, setId] = useState(user.id);
     const [name, setName] = useState(user.name);
     const [username, setUsername] = useState(user.username);
     const [mail, setMail] = useState(user.mail);
@@ -35,7 +35,7 @@ export const  ListItemUser = ({ user,liStyle,style2 }) => {
 
     return(
 
-        <li style={liStyle} key={id}>
+        <li style={liStyle}>
                         <div style={style2}>
                             <h3>Id   : {id} </h3>
                             <h3>Όνομα χρήστη    : {username}</h3>

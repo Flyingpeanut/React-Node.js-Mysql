@@ -11,9 +11,9 @@ export default class AdminPage extends React.Component {
       this.state = {
         users: [],
         filtered:[],
-        fieldChoices:['user_id', 'username', 'mail'],
-        search:'alo',
-        selectedOption:'',
+        fieldChoices:['id', 'username', 'mail'],
+        search:'insert search target',
+        selectedOption: '',
         approval: false,
       };
 
@@ -45,6 +45,7 @@ export default class AdminPage extends React.Component {
             // epestrepse to an to vreis
             return (user['aproved'] === this.state.approval ?  user :  null );
         })
+        console.log(filtered);
         this.setState({
             filtered
         })
@@ -56,6 +57,8 @@ export default class AdminPage extends React.Component {
                 // epestrepse to an to vreis
                 return user[this.state.selectedOption].includes(this.state.search)
             })
+            console.log(filtered);
+
             this.setState({
                 filtered
             })
@@ -82,17 +85,17 @@ export default class AdminPage extends React.Component {
 
       return (
 
-          <React.Fragment >
+         <div>
 
-          <form className = "check-container">
+          <form style = {styles.formFilter}>
               <h1>Filter by:</h1>
               <div className="form-check">
                 <label>
                   <input
                     type="radio"
-                    name="user_id"
-                    value="user_id"
-                    checked={this.state.selectedOption === "user_id"}
+                    name="id"
+                    value="id"
+                    checked={this.state.selectedOption === "id"}
                     onChange={this.handleOptionChange}
                     className="form-check-input"
                   />
@@ -144,13 +147,12 @@ export default class AdminPage extends React.Component {
               </div>
 
             </form>
-            <form>
+            <form style = {styles.formFilter}>
             <h1>Show only approved users</h1>
             <Switch
                 isOn={this.state.approval}
                 onColor="#EF476F"
                 handleToggle={() => {
-                    console.log(this.state.approval);
                     this.setState({approval: !this.state.approval})
                 }}
             />
@@ -162,21 +164,26 @@ export default class AdminPage extends React.Component {
 
 
              </div>
-             <ol style={styles.container}>
-                 {this.state.filtered.map(user => <ListItemUser
+             <ul style={styles.container}>
+                 {this.state.filtered.map(user => <ListItemUser key = {user.id}
                     user    = {user}
                     liStyle = {styles.item}
                     style2  = {styles.body}
                  />)}
-            </ol>
+            </ul>
 
-         </React.Fragment >
+            </div>
+
       );
     }
 
 }
 /*list styles*/
 const styles = {
+    formFilter :{
+            display: 'inline-block',
+            margin: '3% 5%'
+    },
   container: {
        listStyle:'none',
        flex: 1,
