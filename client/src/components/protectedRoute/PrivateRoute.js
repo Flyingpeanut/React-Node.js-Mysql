@@ -4,10 +4,9 @@ import { Route,
 	} from 'react-router-dom';
 
 
-
+// an o xrhsths prospathisei na mpei sto se auto to Route xwris na einai logged inspect
+// tote ton kanei redirect gia login
 export const PrivateRoute = ({ component: Component, ...rest }) => {
-//	console.log(props);
-	console.log(rest);
 	return(
   <Route {...rest} render={(props) => (
 

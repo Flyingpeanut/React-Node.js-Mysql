@@ -3,7 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 // Load User model
-const User = require('../models/User');
+const User = require('../models/users');
 const { forwardAuthenticated } = require('../config/auth');
 
 // Login Page
@@ -92,11 +92,11 @@ function checkRegisterInput(input){
 }
 // Login
 router.post('/login', forwardAuthenticated, (req, res, next) => {
-    console.log('hi');
     passport.authenticate('local', function(err, user, info) {
          if (err) {
-             console.log(err);
-             return next(err);
+                console.log(err);
+                return res.status(401).send({logged_in: false, user: {},errors:[{msg:"Couldn't find user in database"}]});
+
          }
          if (!user) {
              return res.status(401).send({logged_in: false, user: {},errors:[{msg:"Couldn't find user in database"}]});
@@ -104,7 +104,7 @@ router.post('/login', forwardAuthenticated, (req, res, next) => {
          req.logIn(user, function(err) {
             if (err) {
                  console.log(err);
-                return next(err)
+                 return res.status(401).send({logged_in: false, user: {},errors:[{msg:"Couldn't find user in database"}]});
              }
             return res.status(200).send({logged_in: true, user: user.dataValues})
          });

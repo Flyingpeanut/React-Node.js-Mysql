@@ -2,7 +2,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
 
 // Load User model
-const User = require('../models/User');
+const User = require('../models/users');
 
 module.exports ={
     auth: function(passport) {
@@ -33,11 +33,11 @@ module.exports ={
         done(null, user.get());
       });
 
-      passport.deserializeUser(function(id, done) {
+      passport.deserializeUser(function(userdata, done) {
           console.log('deserializeUser');
 
-          console.log(id);
-        User.findByPk(id.user_id)
+          console.log(userdata);
+        User.findByPk(userdata.id)
         .then( (user) => {
             if (user) {
                  done(null, user.get());
@@ -58,10 +58,10 @@ module.exports ={
         return res.status(200).send({logged_in: false, user: {}})
       },
       forwardAuthenticated: function(req, res, next) {
-          console.log('forwarded');
         if (!req.isAuthenticated()) {
           return next();
         }
+        console.log('forwarded');
 
         return res.status(200).send({logged_in: true, user: req.user})
       }

@@ -1,22 +1,17 @@
 var Sequelize = require('sequelize');
 
-// put them in config file and import values!
-
-module.exports = new Sequelize('ted', 'jim', 'Eleoc123', {
+const sequelize = new Sequelize('ted', 'jim', 'Eleoc123', {
   host: 'localhost',
-  dialect: 'mysql',
-  define: {
-          timestamps: false
-      },
+  dialect: 'mysql',/* one of 'mysql' | 'mariadb' | 'postgres' | 'mssql'*/
+
   pool: {
     max: 5,
     min: 0,
+    acquire: 8080,
     idle: 10000
   },
+  timestamps: false
+
 });
 
-// Or you can simply use a connection uri
-//var sequelize = new Sequelize('postgres://user:pass@example.com:5432/dbname');
-/*
-
-});*/
+module.exports = sequelize;

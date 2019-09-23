@@ -68,11 +68,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const db = require('./models/model')
+const db = require('./models/seq')
 
-db.authenticate()
-.then(() => console.log('connected'))
-.catch(err => console.log('error: '+ err))
 
 app.use('/', indexRouter);
 app.use("/auth", authentication);
