@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import axios from 'axios';
-import {ListItem} from './list/ListItem'
-import Switch from './list/Switch'
+import ListItem from './list/ListItem'
 import Select from 'react-select';
 
 export default class Home extends Component {
@@ -19,31 +18,34 @@ export default class Home extends Component {
             description:    undefined,
         },
 
-        minPrice: '',
-        maxPrice: '',
-        locationSearch:'',
-        descSearch:'',
+        minPrice: '',           // min price for items, client side
+        maxPrice: '',           // max price for items, client side
+        locationSearch:'',      // location search field, client side
+        descSearch:'',          // description search field , client side
+        searchItems:'',         // search field passed on server to fetch data
         selectChosenCategory: undefined,
-        selectShownCategories: [],
+        selectShownCategories: [],  // distinct categories on fetched
+
       };
       this.updateLocSearch   = this.updateLocSearch.bind(this)
       this.updateSearch = this.updateSearch.bind(this)
       this.checkMinNumber = this.checkMinNumber.bind(this)
       this.checkMaxNumber = this.checkMaxNumber.bind(this)
       this.filterItems  = this.filterItems.bind(this)
+      this.updateItemSearchField  = this.updateItemSearchField.bind(this)
+      this.fireFetchItems  = this.fireFetchItems.bind(this)
+
 
   }
 
   filterItems(){
 
-      const {filters, items, filtered} = this.state
+      const {filters, items} = this.state
       if (items === []) {
           return []
       }
-      console.log(filters);
       let tempFiltered = items;
       for (const [filterKey, filterValue] of Object.entries(filters)) {
-          console.log(filterKey);
         if(filterValue === undefined)   continue;
         tempFiltered = tempFiltered.filter( (item)=>{
 
@@ -80,7 +82,9 @@ export default class Home extends Component {
               if (!distinctCats.includes(value)) {
                   distinctCats.push(value)
               }
+
           })
+           return undefined;
       })
       let selectOptions = []
       distinctCats.forEach((cat) =>{
@@ -89,9 +93,14 @@ export default class Home extends Component {
       return selectOptions
   }
 
-  fetchItem() {
+  fetchItem(searchField) {
+      console.log(searchField);
     axios
-      .get("http://localhost:9001/search", { withCredentials: true })
+      .get("http://localhost:9001/search",
+      { params:{
+         searchField}
+     },{ withCredentials: true }
+     )
       .then(({data} )=> {
         console.log(data);
       if ( data.status){
@@ -133,7 +142,6 @@ export default class Home extends Component {
   }
 
   updateSearch ( {target}){
-      console.log(target.value);
       this.setState(prevState =>({
           descSearch : target.value,
          filters:{
@@ -143,6 +151,11 @@ export default class Home extends Component {
      }))
 
   }
+
+  fireFetchItems(){
+        return this.fetchItem(this.state.searchItems)
+  }
+
   checkMaxNumber ( event){
       const onlyNumberRegex = /^[0-9\b]+$/
 
@@ -160,74 +173,89 @@ export default class Home extends Component {
 
   }
 
-  componentDidMount() {
+    updateItemSearchField({target}){
+        this.setState({ searchItems:target.value})
+    }
+ /* componentDidMount() {
     this.fetchItem();
 
-  }
+}*/
 
 
   render() {
     return (
-              <div>
-
-
-        <h1>Φίλτρα σοuν </h1>
 
         <div>
 
-        </div>
+            <div style = {styles.bigSearch}>
 
-          <div>
-          <label>Επιλέξτε Κατηγορία<Select
-             styles = {selectStyle}
-              value={this.state.selectChosenCategory}
-              onChange={this.selectChange}
-              options={this.state.selectShownCategories}
-            />
-            </label>
-          </div>
-          <div>
-             <label>Από<input type='number' style={styles.input} value={this.state.minPrice} onChange={this.checkMinNumber}/></label>
-             <label>Εώς<input type='number' style={styles.input} value={this.state.maxPrice} onChange={this.checkMaxNumber}/></label>
-             <button onClick={this.filterItems}>></button>
-          </div>
+                <label>
+                Αναζητήστε αυτό που επιθυμείτε
+                    <input
+                    style={styles.input}
+                     type='text'
+                     onChange={this.updateItemSearchField}
+                     value = {this.state.searchItems}
+                     />
+               </label>
+                <button style={styles.button} onClick={this.fireFetchItems}>Αναζήτηση</button>
+            </div>
+            <div style = {styles.results}>
+                { this.state.items !== [] && <div style={styles.filters}>
+                    <h1>Φίλτρα</h1>
+                      <div  >
+                          <label>Επιλέξτε Κατηγορία<Select
+                             styles = {selectStyle}
+                              value={this.state.selectChosenCategory}
+                              onChange={this.selectChange}
+                              options={this.state.selectShownCategories}
+                            />
+                            </label>
+                      </div>
+                      <div style={styles.input} >
+                        Οριοθέτηση τιμής
+                         <label><input type='number' placeholder="Από €" value={this.state.minPrice} onChange={this.checkMinNumber}/></label>
+                         <label><input type='number'  placeholder="Εώς €" value={this.state.maxPrice} onChange={this.checkMaxNumber}/></label>
+                         <button style={styles.button} onClick={this.filterItems}>>></button>
+                      </div>
 
-          <div>
-              <label>
-              Αναζήτηση περιγραφής
-                  <input
-                  style={styles.input}
-                   type='text'
-                   onChange={this.updateSearch}
-                   value = {this.state.descSearch}
-                   />
-             </label>
-              <button onClick={this.filterItems}>></button>
-          </div>
+                      <div>
+                          <label style={styles.input}>
+                          Αναζήτηση περιγραφής
+                              <input
 
-          <div>
-              <label>
-              Αναζήτηση Τοποθεσίας
-                  <input
-                  style={styles.input}
-                   type='text'
-                   onChange={this.updateLocSearch}
-                   value = {this.state.locationSearch}
-                   />
-             </label>
-              <button onClick={this.filterItems}>></button>
-          </div>
-         <h1>Search here </h1>
+                               type='text'
+                               onChange={this.updateSearch}
+                               value = {this.state.descSearch}
+                               />
+                         </label>
+                          <button style={styles.button} onClick={this.filterItems}>>></button>
+                      </div>
 
-         <ul style={styles.container}>
-             {this.state.filtered.map(item => <ListItem key = {item.id}
-                item    = {item}
-                liStyle = {styles.item}
-                style2  = {styles.body}
-             />)}
-        </ul>
+                      <div>
+                          <label style={styles.input}>
+                          Αναζήτηση τοποθεσίας
+                              <input
 
-
+                               type='text'
+                               onChange={this.updateLocSearch}
+                               value = {this.state.locationSearch}
+                               />
+                         </label>
+                          <button style={styles.button} onClick={this.filterItems}>>></button>
+                      </div>
+                </div>}
+              <div style={styles.items}>
+                 <ul style={styles.container}>
+                     {this.state.filtered.map(item => <ListItem key = {item.id}
+                        {...this.props}
+                        item    = {item}
+                        liStyle = {styles.item}
+                        style2  = {styles.body}
+                     />)}
+                </ul>
+            </div>
+         </div>
 
       </div>
     );
@@ -238,7 +266,7 @@ const selectStyle = {
     container:(provided) => ({
         ...provided,
         border: '1px solid black',
-        width: 400,
+        width: '100%',
 
     }),
   option: (provided, state) => ({
@@ -262,8 +290,32 @@ const selectStyle = {
 
 /*list styles*/
 const styles = {
+    button:{
+        padding: 8,
+        borderRadius: 12,
+        margin: 5,
+    },
+    bigSearch:{
+        fontSize:'1.3em',
+        margin:'5% 25%',
+        width:'65%',
+        padding: 8,
+    },
+    results:{
+        display:'flex'
+    },
+    filters:{
+        margin:'',
+        flex: '0 0 10%',
+
+    },
+    items:{
+        width: '100%',
+        margin:'2% 10%',
+        flex: 1,
+    },
     input:{
-        width:100,
+        width:'100%',
         padding:'1%',
         margin:'1%',
     },
@@ -273,7 +325,7 @@ const styles = {
     },
   container: {
        listStyle:'none',
-       flex: 1,
+       width: '100%',
   },
   sectionHeader: {
       padding:  0,
@@ -281,7 +333,7 @@ const styles = {
       backgroundColor: 'rgba(247,247,247,1.0)',
   },
   item: {
-       margin: '3% 20%',
+       margin: '3% 12%',
        fontSize: '0.9em',
        size:'0.7em',
        padding: 8,

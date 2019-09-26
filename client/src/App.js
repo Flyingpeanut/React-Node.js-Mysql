@@ -10,8 +10,8 @@ import Home from './components/Home';
 import Dashboard from "./components/Dashboard";
 import Search from "./components/Search";
 import AdminPage from "./components/protectedRoute/AdminPage"
-import UserProfile from "./components/protectedRoute/UserProfile"
-
+import ItemPage from "./components/ItemPage"
+import Profile from "./components/profile/Profile"
 import {PrivateRoute} from "./components/protectedRoute/PrivateRoute"
 import {NotAuthenticatedRoute} from "./components/protectedRoute/NotAuthenticatedRoute"
 
@@ -119,17 +119,13 @@ class App extends Component {
 									   loggedInStatus = {this.state.loggedInStatus}/>
 								  )}
 							  />
-							  <Route
-				                exact
-				                path={"/dashboard"}
-				                render={props => (
-				                  <Dashboard
-				                    {...props}
-									 handleLogin={this.handleLogin}
-				                    loggedInStatus={this.state.loggedInStatus}
-				                  />
-				                )}
-				              />
+							 
+							  <Route exact path="/item/:itemId"
+							  		render={(props) => (
+  									  <ItemPage {... props}
+  									   loggedInStatus = {this.state.loggedInStatus}/>
+  								  )} />
+
 							  <NotAuthenticatedRoute
 							    path='/auth'
 							  	component={Auth}
@@ -143,7 +139,11 @@ class App extends Component {
 							   component = {AdminPage}
 							   loggedInStatus = {this.state.loggedInStatus}
 							  />
-
+							  <PrivateRoute
+							  path='/profile'
+							  component = {Profile}
+							  loggedInStatus = {this.state.loggedInStatus}
+							 />
 							<Route
 							  path='*'
 							  component = {() => "404 NOT FOUND"}

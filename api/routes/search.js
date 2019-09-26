@@ -5,20 +5,25 @@ const passport = require('passport');
 // Load User model
 const Users = require('../models/users');
 const Items = require('../models/Items');
+const Bids  = require('../models/bids');
+
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 const {Categories, Middle} = require('../models/categories');
 
-const { forwardAuthenticated } = require('../config/auth');
+const { forwardAuthenticated, ensureAuthenticated } = require('../config/auth');
+
 
 router.get('/', function(req, res, next) {
     console.log('get search');
-    console.log(req.params);
 
-
+    const {searchField} = req.query
+    console.log(searchField);
     Middle.findAll({
         include:[{
             model: Items,
             required:true,
-            where:{ongoing:true, started:true},
+            where:{ongoing:true, started:true, name:{[Op.like]:`%${searchField}%`}},
             include:[{
                 model: Users,
                 required:true,
@@ -34,7 +39,6 @@ router.get('/', function(req, res, next) {
         let itemData = destructureData(itemsInfo)
         // throw away duplicated joined rows
         let categoriesUnited = uniteCategoriesData(itemData)
-        console.log(categoriesUnited);
         res.send({status:true, items:categoriesUnited})
     })
     .catch(err => {
@@ -115,9 +119,105 @@ function destructureData(itemsInfo){
     return data
 }
 
-router.post('/',function(req, res, next) {
-    console.log('post search');
-    res.send({status: true})
+
+router.get('/singleItem',function(req, res, next) {
+    console.log('singleItem');
+    const {itemId} = req.query
+    Middle.findAll({
+        include:[{
+            model: Items,
+            required:true,
+            where:{id:itemId, ongoing:true, started:true},
+            include:[{
+                model: Users,
+                required:true,
+            }]
+        },
+        {
+            model: Categories,
+            required:true
+        },
+    ]})
+    .then((itemsInfo) => {
+        // reformat data from query
+        let itemData = destructureData(itemsInfo)
+        // throw away duplicated joined rows
+        let categoriesUnited = uniteCategoriesData(itemData)
+        res.send({status:true, item:categoriesUnited[0]})
+    })
+    .catch(err => {
+        console.log(err);
+        res.send({status:false, items:[], msg:'Bad request'})
+    })
+
+})
+
+
+router.post('/itemBid', ensureAuthenticated,function(req, res, next) {
+    const {id} = req.user
+    const {itemId, bidPrice} = req.body
+    Items.findAll({
+        where: {id:itemId,ongoing:true,curently:{[Op.lt]: bidPrice}}
+    }).then( result =>{
+            //not valid input
+            if (!result) {
+                return res.send({status: false})
+            }
+            Bids.create({bid_amount:bidPrice, userId:id, itemId})
+            .then(task=>{
+                if (task) {
+                    Items.update(
+                        {curently:bidPrice},
+                        {where:{id:itemId}}
+                    ).then(updated =>{
+                        if (updated) {
+                            return res.send({status: true})
+                        }
+                        res.send({status: false})
+                    })
+                }
+            })
+        }).catch(err =>{
+            console.log(err);
+            res.send({status: false})
+        })
 });
+
+router.post('/itemBuy', ensureAuthenticated, function(req, res, next) {
+    const {id} = req.user
+    const {itemId} = req.body
+    Items.findAll({
+        where: {id:itemId,ongoing:true}
+    }).then( result =>{
+            //not valid input
+            if (!result) {
+                return res.send({status: false})
+            }
+            console.log(result);
+            Bids.create({bid_amount:result[0].dataValues.curently, userId:id, itemId})
+            .then(task=>{
+                if (task) {
+                    Items.update(
+                        {curently:result[0].dataValues.curently,
+                         ongoing:false,
+                        },
+                        {where:{id:itemId}}
+                    ).then(updated =>{
+                        if (updated) {
+                            return res.send({status: true})
+                        }
+                        res.send({status: false})
+                    })
+                }
+                else{
+                    res.send({status: false})
+                }
+            })
+        }).catch(err =>{
+            console.log(err);
+            res.send({status: false})
+        })
+});
+
 
 module.exports = router;

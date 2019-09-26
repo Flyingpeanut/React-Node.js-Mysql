@@ -4,17 +4,17 @@ import axios from 'axios';
 
 export const  ListItemUser = ({ user,liStyle,style2 }) => {
 
-    const [id, setId] = useState(user.id);
-    const [name, setName] = useState(user.name);
-    const [username, setUsername] = useState(user.username);
-    const [mail, setMail] = useState(user.mail);
-    const [lastName, setlastName] = useState(user.last_name);
-    const [address, setAddress] = useState(user.address);
+    const [id] = useState(user.id);
+    const [name] = useState(user.name);
+    const [username] = useState(user.username);
+    const [mail] = useState(user.mail);
+    const [lastName] = useState(user.last_name);
+    const [address] = useState(user.address);
     const [aproved, setAproved] = useState(user.aproved);
-    const [country, setCountry] = useState(user.country);
-    const [AFM, setAFM] = useState(user.AFM);
-    const [seller, setSeller] = useState(user.seller_rating);
-    const [bidder, setBidder] = useState(user.bider_rating);
+    const [country] = useState(user.country);
+    const [AFM] = useState(user.AFM);
+    const [seller] = useState(user.seller_rating);
+    const [bidder] = useState(user.bider_rating);
 
     function userApprove(user){
         axios
