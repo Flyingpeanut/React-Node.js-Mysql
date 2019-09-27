@@ -19,11 +19,12 @@ router.get('/', function(req, res, next) {
 
     const {searchField} = req.query
     console.log(searchField);
+    let curDate = new Date();
     Middle.findAll({
         include:[{
             model: Items,
             required:true,
-            where:{ongoing:true, started:true, name:{[Op.like]:`%${searchField}%`}},
+            where:{finished:false, ended:{[Op.gt]: curDate}, started:{[Op.ne]: null}, name:{[Op.like]:`%${searchField}%`}},
             include:[{
                 model: Users,
                 required:true,
@@ -36,6 +37,7 @@ router.get('/', function(req, res, next) {
     ]})
     .then((itemsInfo) => {
         // reformat data from query
+        console.log(itemsInfo);
         let itemData = destructureData(itemsInfo)
         // throw away duplicated joined rows
         let categoriesUnited = uniteCategoriesData(itemData)
@@ -123,11 +125,12 @@ function destructureData(itemsInfo){
 router.get('/singleItem',function(req, res, next) {
     console.log('singleItem');
     const {itemId} = req.query
+    let curDate = new Date();
     Middle.findAll({
         include:[{
             model: Items,
             required:true,
-            where:{id:itemId, ongoing:true, started:true},
+            where:{id:itemId,finished:false, ended:{[Op.gt]: curDate}, started:{[Op.ne]: null},},
             include:[{
                 model: Users,
                 required:true,
@@ -156,8 +159,9 @@ router.get('/singleItem',function(req, res, next) {
 router.post('/itemBid', ensureAuthenticated,function(req, res, next) {
     const {id} = req.user
     const {itemId, bidPrice} = req.body
+    let curDate = new Date();
     Items.findAll({
-        where: {id:itemId,ongoing:true,curently:{[Op.lt]: bidPrice}}
+        where: {id:itemId,finished:false,ended:{[Op.gt]: curDate}, started:{[Op.ne]: null},curently:{[Op.lt]: bidPrice}}
     }).then( result =>{
             //not valid input
             if (!result) {
@@ -167,7 +171,8 @@ router.post('/itemBid', ensureAuthenticated,function(req, res, next) {
             .then(task=>{
                 if (task) {
                     Items.update(
-                        {curently:bidPrice},
+                        {curently:bidPrice,
+                            num_of_bids: Sequelize.literal(`num_of_bids+1`),},
                         {where:{id:itemId}}
                     ).then(updated =>{
                         if (updated) {
@@ -186,20 +191,21 @@ router.post('/itemBid', ensureAuthenticated,function(req, res, next) {
 router.post('/itemBuy', ensureAuthenticated, function(req, res, next) {
     const {id} = req.user
     const {itemId} = req.body
+    let curDate = new Date();
     Items.findAll({
-        where: {id:itemId,ongoing:true}
+        where: {id:itemId,ended:{[Op.gt]: curDate}, started:{[Op.ne]: null},finished:false,userId:{[Op.ne]: id}}
     }).then( result =>{
             //not valid input
             if (!result) {
                 return res.send({status: false})
             }
-            console.log(result);
             Bids.create({bid_amount:result[0].dataValues.curently, userId:id, itemId})
             .then(task=>{
                 if (task) {
                     Items.update(
                         {curently:result[0].dataValues.curently,
-                         ongoing:false,
+                         finished:true,
+                         num_of_bids: Sequelize.literal(`num_of_bids+1`),
                         },
                         {where:{id:itemId}}
                     ).then(updated =>{

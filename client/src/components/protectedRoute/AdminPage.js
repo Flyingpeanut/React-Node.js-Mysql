@@ -54,7 +54,13 @@ export default class AdminPage extends React.Component {
         if(this.state.fieldChoices.includes(this.state.selectedOption)){
             let filtered = this.state.users.filter((user) =>{
                 // epestrepse to an to vreis
+            
+                if (this.state.selectedOption === 'id') {
+                    return user[this.state.selectedOption] == this.state.search
+                }
                 return user[this.state.selectedOption].includes(this.state.search)
+                //console.log(user[this.state.selectedOption]);
+                //
             })
             console.log(filtered);
 

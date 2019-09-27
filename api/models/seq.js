@@ -18,7 +18,7 @@ Items.belongsTo(Users);
 Users.hasMany(Bids, {foreignKey: 'userId'})
 Users.hasMany(Items, {foreignKey: 'userId'})
 Categories.hasMany(Middle, {foreignKey: 'categoryId'})
-Items.hasMany(Middle, {foreignKey: 'itemId'})
+Items.hasMany(Middle, {foreignKey: 'itemId',onDelete: 'cascade'})
 Items.hasMany(Bids, {foreignKey: 'itemId'})
 db.sync();
 db.authenticate()

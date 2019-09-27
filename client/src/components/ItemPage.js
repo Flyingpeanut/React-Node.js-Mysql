@@ -21,7 +21,7 @@ export default class ItemPage extends Component {
           username:'',
           bidPrice:'',
       }
-
+      this.bidItem =  this.bidItem.bind(this)
     }
 
     fetchUserData() {
@@ -111,7 +111,7 @@ export default class ItemPage extends Component {
          console.log(data);
          if (data.status) {
              alert('Συγχαρητήρια! Η αγορά ολοκληρώθηκε. Ανακατεύθυνση στο προφίλ χρήστη.')
-           //  this.props.history.push(`/`)
+             this.props.history.push(`/`)
 
          }
          else{
@@ -155,7 +155,7 @@ export default class ItemPage extends Component {
                        <input   type='number' placeholder={this.state.curently+1}  onChange={this.bidChange.bind(this)} />
                        </label>
                       }
-                       {this.props.loggedInStatus && <button className='right'  onClick={()=>this.bidItem().bind(this)}>Στείλε προσφορά</button>}
+                       {this.props.loggedInStatus && <button className='right'  onClick={this.bidItem}>Στείλε προσφορά</button>}
                    </div>
 
                 </div>

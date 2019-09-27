@@ -2,7 +2,6 @@ import React, { Component }  from 'react';
 import Toggle from '../list/Toggle';
 import  {Link} from 'react-router-dom'
 import axios from "axios";
-import * as Yup from 'yup';
 
 
 
@@ -18,6 +17,31 @@ export default class ListItemAuction extends Component {
       this.dateStartHandle = this.dateStartHandle.bind(this);
       this.dateEndHandle = this.dateEndHandle.bind(this);
       this.submitHandle = this.submitHandle.bind(this);
+      this.deleteHandle = this.deleteHandle.bind(this);
+    }
+
+    deleteHandle({target}){
+        const {id, name} = this.props.item;
+        if (!this.confirmation(`Διαγραφή αντικείμένου ${name} ;`)){
+            return console.log('nope');
+        }
+        axios.delete(`http://localhost:9001/profile/manage/${id}`,
+        {
+            withCredentials: true
+        })
+        .then(({data}) => {
+            console.log(data);
+             if (data.status) {
+                 // better error handling
+                alert('Successful auction deletion')
+                this.props.history.push('/profile')
+            }
+            else{
+                alert('Something went bad  delete failed')
+
+            }
+        })
+        .catch(res => alert(res))
     }
 
     submitHandle({target}){
@@ -60,7 +84,7 @@ export default class ListItemAuction extends Component {
                 this.props.history.push('/profile')
             }
             else{
-                alert('Something went bad')
+                alert('Something went bad activation failed')
 
             }
         })
@@ -107,13 +131,14 @@ export default class ListItemAuction extends Component {
                 <Toggle>
                  {({on, toggle}) => (
                     <div>
+                    {!on && (<Link style={styles.right} to={`/profile/manage/${id}`}> Επεξεργασία  </Link>)}
                         { on && (<div style={styles.body}>
                             <label>Ημερομηνία εκκίνισης  <input name="startDate" onChange={this.dateStartHandle} type='date' value={startDate}/>  </label>
                             <label>Ημερομηνία τέλους    <input name="endDate" onChange={this.dateEndHandle} type='date'value={endDate}/>      </label>
                             <p className= 'error'>{message}</p>
                                 <button style={styles.right} onClick={  this.submitHandle}>Ενεργοποίηση</button>
                         </div>)}
-                        {!on && (<Link style={styles.right} to={`/profile/manage/${id}`}> => Επεξεργασία  </Link>)}
+                        {!on && (<button style={styles.right} onClick={  this.deleteHandle}>Διαγραφή </button>)}
                         <button onClick={toggle}>
                         {on ? 'Ακύρωση' : 'Ενεργοποίηση δημοπρασίας'}
                         </button>

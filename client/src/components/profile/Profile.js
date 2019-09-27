@@ -5,6 +5,8 @@ import CreateAuction from "./CreateAuction";
 import ManageAuctions from "./ManageAuctions";
 import {Link,	Route,} from 'react-router-dom';
 import AuctionPage from './AuctionPage'
+import LiveAuctions from './LiveAuctions'
+
 //import { 	 Link	} from 'react-router-dom';
 export default class Profile extends Component {
 
@@ -22,6 +24,7 @@ render() {
     <React.Fragment >
       {<Link style={linkStyle} to="/profile/create">Create new Auction</Link>}
       {<Link style={linkStyle} to="/profile/manage">Manage Auctions</Link>}
+        {<Link style={linkStyle} to="/profile/liveAuctions">Live Auctions</Link>}
     </React.Fragment >
 
 
@@ -66,6 +69,18 @@ render() {
          />
          <Route
 
+          exact path={"/profile/liveAuctions"}
+           render={props => (
+             <LiveAuctions
+               {...props}
+               user={this.props.user}
+
+             />
+           )}
+
+         />
+         <Route
+
            path={"/profile/manage/:itemId"}
            render={props => (
              <AuctionPage
@@ -99,7 +114,7 @@ const headerStyle = {
 }
 
 const linkStyle = {
-  color: '#fff',
-  textDecoration: 'none',
-  margin: '8px',
+    color: '#000',
+     textDecoration: 'none',
+     margin: '8px',
 }

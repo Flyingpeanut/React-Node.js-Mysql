@@ -4,7 +4,7 @@ import React from 'react';
 import axios from "axios";
 import { 	 Link	} from 'react-router-dom';
 import './profile.css';
-import ListItemAuction from '../list/ListItemAuction'
+import ListLiveAuction from '../list/ListLiveAuction'
 
 export default class ManageAuctions extends React.Component {
   constructor(props) {
@@ -18,22 +18,22 @@ export default class ManageAuctions extends React.Component {
       };
   }
 
-  fetchInactiveAuctions() {
+  fetchActiveAuctions() {
     axios
-      .get("http://localhost:9001/profile/manage",
+      .get("http://localhost:9001/profile/fetch/userActiveAuctions",
             { withCredentials: true })
       .then(({data} )=> {
-        console.log(data);
-      if ( data.status){
+          console.log(data);
+          if ( data.status){
             this.setState({auctions:data.auctions})
             this.setState({loaded:true})
 
-    }
-    if (!data.status || data.items === []) {
-        this.setState({message:'Δεν υπάρχουν ανενεργές δημοπρασίες.'})
+            }
+        if (!data.status || data.items === []) {
+            this.setState({message:'Δεν βρέθηκαν ενεργές δημοπρασίες.'})
 
-        }
-      })
+            }
+          })
       .catch(error => {
           this.setState({message:'Εμφανίστηκε κάποιο λάθος!'})
           console.log("bad search field ", error);
@@ -41,7 +41,7 @@ export default class ManageAuctions extends React.Component {
   }
 
   componentDidMount() {
-     this.fetchInactiveAuctions();
+     this.fetchActiveAuctions();
 
  }
 
@@ -50,12 +50,12 @@ export default class ManageAuctions extends React.Component {
       const {loaded,auctions,message} =this.state
       return (
         <React.Fragment>
-            <h1>Manage your inactive auctions</h1>
+            <h1>Manage your active auctions</h1>
             <h2>{message}</h2>
-            {loaded&&(<h2>These are your inactive auctions</h2>)}
+            {loaded&&(<h2>These are your active auctions</h2>)}
             <div>
                 <ul>
-                {auctions.map((item) => <ListItemAuction key = {item.id}
+                {auctions.map((item) => <ListLiveAuction key = {item.id}
                    item    = {item}
                    history ={this.props.history}
                 />)}
