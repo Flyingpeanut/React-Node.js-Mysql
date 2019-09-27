@@ -60,6 +60,7 @@ class App extends Component {
               	loggedInStatus: false,
 			  	user:response.data.user
             });
+			
           }
         })
         .catch(error => {

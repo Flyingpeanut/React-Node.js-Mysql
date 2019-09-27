@@ -22,7 +22,6 @@ router.post('/register', forwardAuthenticated, (req, res) => {
 
 
  let errors = checkRegisterInput(req.body.posted_data)
-console.log(errors);
   if (errors.length > 0) {
     res.set('Content-Type', 'application/json')
     .send({errors: errors});
@@ -92,24 +91,35 @@ function checkRegisterInput(input){
 }
 // Login
 router.post('/login', forwardAuthenticated, (req, res, next) => {
-    passport.authenticate('local', function(err, user, info) {
-         if (err) {
-                console.log(err);
-                return res.status(401).send({logged_in: false, user: {},errors:[{msg:"Couldn't find user in database"}]});
+    const {username} = req.body
+    User.findOne({where:{username,aproved:true}})
+        .then((approved)=>{
+            if (!approved) {
+                return res.status(200).send({logged_in: false, user: {},errors:[{msg:'Sorry not approved yet'}]})
+            }
+            passport.authenticate('local', function(err, user, info) {
+                 if (err) {
+                        console.log(err);
+                        return res.status(401).send({logged_in: false, user: {},errors:[{msg:"Couldn't find user in database"}]});
 
-         }
-         if (!user) {
-             return res.status(401).send({logged_in: false, user: {},errors:[{msg:"Couldn't find user in database"}]});
-         }
-         req.logIn(user, function(err) {
-            if (err) {
-                 console.log(err);
-                 return res.status(401).send({logged_in: false, user: {},errors:[{msg:"Couldn't find user in database"}]});
-             }
-            return res.status(200).send({logged_in: true, user: user.dataValues})
-         });
+                 }
+                 if (!user) {
+                     return res.status(401).send({logged_in: false, user: {},errors:[{msg:"Couldn't find user in database"}]});
+                 }
+                 req.logIn(user, function(err) {
+                    if (err) {
+                         console.log(err);
+                         return res.status(401).send({logged_in: false, user: {},errors:[{msg:"Couldn't find user in database"}]});
+                     }
+                    return res.status(200).send({logged_in: true, user: user.dataValues})
+                 });
 
- })(req, res, next)
+         })(req, res, next)
+
+        })
+
+
+
  });
 
 // Logout
