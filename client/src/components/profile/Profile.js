@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import axios from "axios";
 //import Register from "./Register";
-import Pform from "./profileForm";
-import Pform2 from "./profileform2";
+import CreateAuction from "./CreateAuction";
+import ManageAuctions from "./ManageAuctions";
 import {Link,	Route,} from 'react-router-dom';
 //import { 	 Link	} from 'react-router-dom';
 export default class Profile extends Component {
@@ -10,15 +10,12 @@ export default class Profile extends Component {
   constructor(props) {
 
     super(props);
-    this.state = {
-        username:'',
-        approved:''
-    }
-    this.handleSuccessfulAuth = this.handleSuccessfulAuth.bind(this);
+
   }
 
-
+/*
   fetchUser() {
+      console.log(this.props);
     axios
       .get("http://localhost:9001/profile/user", { withCredentials: true })
       .then(({data} )=> {
@@ -33,30 +30,44 @@ export default class Profile extends Component {
         console.log("check login error", error);
       });
   }
+*/
 
-
-
-
-   componentDidMount() {
-       this.fetchUser();
-   }
 
 render() {
-  //const approved =this.state.aproved
+ const {username, name, last_name, address, country, admin,have_messg, AFM,mail} =this.props.user
   return (
     <div>
-    <h1>Welcome {this.state.username} </h1>
+    <h1>Καλώς ηρθάτε {username} </h1>
     <React.Fragment >
       {<Link style={linkStyle} to="/profile/create">Create new Auction</Link>}
       {<Link style={linkStyle} to="/profile/manage">Manage Auctions</Link>}
     </React.Fragment >
 
+
+    <Route
+     exact path={"/profile"}
+     render={props => (
+
+             <div>
+                 <h3>Στοιχεία χρήστη:</h3>
+                 <ul>
+                     <li>Ονοματεπώνυμο: {name} {last_name}</li>
+                     <li>Τοποθεσία: {address} {country}</li>
+                     <li>Επικοινωνία: {mail}</li>
+
+                 </ul>
+             </div>
+
+     )}
+   />
+
           <Route
 
            path={"/profile/create"}
            render={props => (
-             <Pform
+             <CreateAuction
                {...props}
+               user={this.props.user}
              />
            )}
          />
@@ -64,12 +75,15 @@ render() {
 
            path={"/profile/manage"}
            render={props => (
-             <Pform2
+             <ManageAuctions
                {...props}
+               user={this.props.user}
+
              />
            )}
 
          />
+
 
         </div>
       );

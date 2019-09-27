@@ -4,7 +4,7 @@ import React from 'react';
 import axios from "axios";
 import { 	 Link	} from 'react-router-dom';
 import './profile.css';
-export default class profileform2 extends React.Component {
+export default class ManageAuctions extends React.Component {
   constructor(props) {
     super(props);
 
@@ -79,55 +79,29 @@ console.log('getting data!!');
   }
 
 
-  fetchUser() {
-    axios
-      .get("http://localhost:9001/profile/user", { withCredentials: true })
-      .then(({data} )=> {
-    if ( data.status){
-          this.setState({username:data.users.username})
-          this.setState({aproved:data.users.aproved})
-          console.log(data.users);
-          console.log(this.state.username);
-            console.log(this.state.aproved);
-           this.setState({filtered: this.state.users})
-        }
-      })
-      .catch(error => {
-        console.log("check login error", error);
-      });
-  }
 
 
    Imin() {
-  console.log(this.state.aproved)
+       console.log(this.state.aproved)
     if (this.state.aproved) {
 
             return  <Link style={linkStyle}  to="/profile/add">create auction</Link>;
 
     }
-return <p> </p>
+    return <p> </p>
   }
 
-
-
-   componentWillMount() {
-console.log('mounted')
-     this.getauctions();
-this.fetchUser();
-
-console.log(this.state.aproved)
- 	}
 
 
   render() {
 
       return (
         <React.Fragment>
-        <h1> Welcome to bid world</h1>
+            <h1> Welcome to bid world</h1>
 
-        <p> here are all your curent auctions</p>
+            <p> here are all your curent auctions</p>
 
-<p> go fornicaTE whit a racoon </p>
+                <p> go fornicaTE whit a racoon </p>
 
 
 
@@ -135,10 +109,10 @@ console.log(this.state.aproved)
      <ul className="list-group">
        {this.state.items.map(items => (
          <li key={items.id} className={items.name}>
-        <p>name :   {items.name} </p>
-        <p> description :   {items.description} </p>
-        <p> curently :  {items.curently} ,final price :  {items.buy_price} </p>
-        <p> the auction ends at : </p>
+            <p>name :   {items.name} </p>
+            <p> description :   {items.description} </p>
+            <p> curently :  {items.curently} ,final price :  {items.buy_price} </p>
+            <p> the auction ends at : </p>
          </li>
        ))}
      </ul>

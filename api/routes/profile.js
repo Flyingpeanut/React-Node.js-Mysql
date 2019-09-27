@@ -3,11 +3,14 @@ const router = express.Router();
 //const bcrypt = require('bcryptjs');
 const passport = require('passport');
 // Load User model
-const User = require('../models/User');
+
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
+const User = require('../models/users');
 const Items = require('../models/Items');
 const Bids = require('../models/bids');
+const  {Categories, Middle} = require('../models/categories');
 
-const Categories= require('../models/categories');
 const { ensureAuthenticated } = require('../config/auth');
 
 
@@ -18,21 +21,76 @@ const { ensureAuthenticated } = require('../config/auth');
 
 router.get('/user', ensureAuthenticated, (req, res) => {
     console.log('user!!! get');
-    //console.log(req.user)
-    const id=req.user.id;
+    console.log(req.user)
+    //const {id} = req.user;
         User.findOne( {where:{id}})
         .then(users =>{
-          console.log(users.dataValues.username);
-            res.send({status:true, users: users})
+            if (!users) {
+                return res.send({status:false, users: undefined})
+            }
+          console.log(users.dataValues);
+            res.send({status:true, users: users.dataValues})
         }).catch(err => {
             console.log(err);
             res.send({status:false, users:undefined})
-        })
-    //}
+        });
 });
 
+router.post('/create',ensureAuthenticated, (req, res) => {
+    console.log('profile!!! create');
+    console.log(req.body)
+    console.log(req.user);
+    const {userId, country} = req.user;
+    const location =req.user.address
+    const {buy_price, categories, description, first_bid, itemName} = req.body
 
+    let categoriesArray = categories.toLowerCase().split(' ');
 
+    //first create categories if not found
+     Categories.findAll({where:{
+         category:{[Op.or] : categoriesArray}
+     }})
+        .then(duplicates =>{
+            let categoriesInDb = duplicates.map(dup => {return dup.dataValues.category  })
+            let filtered = categoriesArray.filter((cat) =>{ return categoriesInDb.indexOf(cat) < 0 })
+            let bulkCreateObject = filtered.map(cat =>{ return {category:cat}})
+            Categories.bulkCreate(bulkCreateObject)
+                   .then(() =>{
+                           return Categories.findAll({where:{
+                               category:{[Op.or] : categoriesArray}
+                           }})
+                           .then((userCategories) =>{
+                               let newItem = {buy_price, categories, description, first_bid,
+                                      name:itemName ,userId, location, country}
+
+                                            console.log(newItem);                      //create Item
+                               return Items.create(newItem)
+                                    .then((created)=>{
+                                        console.log(created);
+                                        let itemId = created.id
+                                        let middleBulkCreateArray =  userCategories.map((cat) =>{
+                                                return {itemId, categoryId: cat.dataValues.id}
+                                        })
+                                        console.log(created);
+                                        // connect item with its categories
+                                        return Middle.bulkCreate(middleBulkCreateArray).then(()=>{
+                                                res.send({status:true})
+                                        })
+
+                               })
+
+                           })
+                   })
+
+        }).catch(err =>{
+            console.log(err);
+            res.send({status:false})
+
+        })
+    /*   */
+    /// 2nd createItem
+    /// bind item with categories
+});
 
 
 

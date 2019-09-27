@@ -7,7 +7,9 @@ const sequelize = require('./model')
 const Categories = sequelize.define('categories', {
   category: {
     type: Sequelize.STRING,
-    allowNull: false}
+    allowNull: false,
+    unique:true
+    }
 
 },{
    timestamps: false
