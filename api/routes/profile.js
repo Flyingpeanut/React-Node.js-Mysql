@@ -40,8 +40,7 @@ router.post('/create',ensureAuthenticated, (req, res) => {
     console.log('profile!!! create');
     console.log(req.body)
     console.log(req.user);
-    const {userId, country} = req.user;
-    const location =req.user.address
+    const {id, country, address} = req.user;
     const {buy_price, categories, description, first_bid, itemName} = req.body
 
     let categoriesArray = categories.toLowerCase().split(' ');
@@ -61,7 +60,7 @@ router.post('/create',ensureAuthenticated, (req, res) => {
                            }})
                            .then((userCategories) =>{
                                let newItem = {buy_price, categories, description, first_bid,
-                                      name:itemName ,userId, location, country}
+                                      name:itemName ,userId:id, location:address, country}
 
                                             console.log(newItem);                      //create Item
                                return Items.create(newItem)
@@ -77,6 +76,10 @@ router.post('/create',ensureAuthenticated, (req, res) => {
                                                 res.send({status:true})
                                         })
 
+                               }).catch(err =>{
+                                   console.log(err);
+                                   res.send({status:false})
+
                                })
 
                            })
@@ -87,16 +90,100 @@ router.post('/create',ensureAuthenticated, (req, res) => {
             res.send({status:false})
 
         })
-    /*   */
-    /// 2nd createItem
-    /// bind item with categories
+
 });
 
 
+router.get('/manage',ensureAuthenticated, (req, res) => {
+    console.log('profile!!! create');
+
+    const {id} = req.user;
+    console.log(req.user);
+    Items.findAll({where:{userId:id,started:null},include:[Bids]})
+            .then((auctions)=>{
+                console.log(auctions);
+                res.send({status:true, auctions})
+
+            }).catch(err =>{
+                console.log(err);
+                res.send({status:false, auctions:[]})
+            })
+
+})
 
 
+router.post('/manage/:itemId',ensureAuthenticated, (req, res) => {
+    console.log('profile!!! post manage id');
 
+    console.log(req.params);
+    // fields user can edit
+    const updateFields = [ 'name', 'description', 'first_bid', 'buy_price', 'categories', 'started', 'ended']
+    const {id} = req.user;
+    const {itemId} = req.params;
+    const { name, description, first_bid, buy_price, categories, startDate, endDate} = req.body;
+    const {body:{...updateObj}} = req
+    let finalObj = {}
+    for (let [key, value] of Object.entries(updateObj)) {
+        if (updateFields.includes(key) && value !== '' && value !== undefined) {
+            finalObj[key] = value
+        }
+    }
+    console.log(finalObj);
+    if ((!finalObj.started && finalObj.ended) || finalObj.started && !finalObj.ended) {
+        return res.send({status:false, message: 'both dates are needed'})
+    }
+    console.log(req.user);
+    Items.update(finalObj,{where:{id:itemId, userId:id, started:null}})
+            .then(([affectedCount, affectedRows])=>{
+                console.log(affectedCount);
+                console.log(affectedRows);
+                if (affectedCount > 0) {
+                    return res.send({status:true})
+                }
+                return res.send({status:false, message: 'nothing to update ... weird'})
 
+            }).catch(err =>{
+                console.log(err);
+                res.send({status:false, message: 'server error try again later'})
+            })
+
+})
+
+router.get('/fetch/notStartedAuction/:itemId',ensureAuthenticated, (req, res) => {
+    console.log('profile!!! notStartedAuction');
+    const {itemId} = req.params;
+
+    const {id} = req.user;
+    console.log(id, itemId);
+    Middle.findAll({
+        include:[{
+            model: Items,
+            required:true,
+            where:{id:itemId, userId:id, started:null },
+            include:[{
+                model: User,
+                required:true,
+            }]
+        },
+        {
+            model: Categories,
+            required:true
+        },
+    ]})
+    .then((itemsInfo) => {
+        // reformat data from query
+        console.log(itemsInfo[0]);
+        console.log('!!!!!!!!!!!!!!!!');
+        console.log(itemsInfo[0].middle);
+
+        res.send({status:true, item:itemsInfo})
+    })
+    .catch(err => {
+        console.log(err);
+        res.send({status:false, item:[], msg:'Bad request'})
+    })
+
+})
 
 
 

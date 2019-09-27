@@ -52,7 +52,7 @@ const Items = sequelize.define('items', {
 },{
    timestamps: true
 });
-Items.belongsTo(Users);
+
 sequelize.sync().then(() => console.log('Db Connection OK, Items Table Ready')).catch(err => console.log("DB Err Items: ", err));
 
 module.exports = Items;

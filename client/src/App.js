@@ -106,6 +106,7 @@ class App extends Component {
 										{... props}
 									 	handleLogout={this.handleLogout}
 										loggedInStatus = {this.state.loggedInStatus}
+										admin ={this.state.user.admin}
 									/>
 								)}
 							 />

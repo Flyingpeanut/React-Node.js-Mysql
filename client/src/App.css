@@ -19,7 +19,9 @@ ul{
 .container {
   padding: 0 1rem;
 }
-
+.error{
+    color:red;
+}
 .btn {
   display: inline-block;
   border: none;

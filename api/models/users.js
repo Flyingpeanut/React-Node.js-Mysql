@@ -56,6 +56,6 @@ const Users = sequelize.define('users', {
 });
 
 
-//sequelize.sync().then(() => console.log('Db Connection OK, Users Table Ready')).catch(err => console.log("DB Err Users: ", err));
+sequelize.sync().then(() => console.log('Db Connection OK, Users Table Ready')).catch(err => console.log("DB Err Users: ", err));
 
 module.exports = Users;

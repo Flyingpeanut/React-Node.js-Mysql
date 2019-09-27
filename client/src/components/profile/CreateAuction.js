@@ -52,9 +52,6 @@ export default class CreateAuction extends React.Component {
                   buy_price:    '',
                   first_bid:        '',
                   categories:   '',
-                  startDate:'',
-                  endDate:'',
-
               }}
               validationSchema={Yup.object().shape({
                   itemName: Yup.string()
@@ -67,13 +64,6 @@ export default class CreateAuction extends React.Component {
                             'buy_price',
                             (buy_price, schema) => (buy_price && schema.max(buy_price)),
                         ).required('place your starting price'),
-                startDate: Yup.date()
-                        .min(new Date(),'it must start later than today'),
-                endDate: Yup.date()
-                      .when(
-                        'startDate',
-                        (startDate, schema) => (startDate && schema.min(startDate).required('must pick end date with start date')),
-                    ),
                 categories: Yup.string().required('please insert at least one category you can separate multiple with space')
 
 
@@ -81,7 +71,7 @@ export default class CreateAuction extends React.Component {
               })}
              onSubmit= { fields => {
                  console.log(fields);
-                  const {buy_price, categories, description, first_bid, itemName, startDate, endDate} = fields
+                  const {buy_price, categories, description, first_bid, itemName} = fields
                  if (categories==='') {
                      alert('please choose at least one category')
                  }
@@ -92,8 +82,6 @@ export default class CreateAuction extends React.Component {
                      description,
                      first_bid,
                      itemName,
-                     startDate,
-                     endDate,
                  },
                  {
                      withCredentials: true
@@ -142,16 +130,6 @@ export default class CreateAuction extends React.Component {
                               <label htmlFor="categories">Categories </label>
                               <Field name="categories" type="text" className={'form-control' + (errors.categories && touched.categories ? ' is-invalid' : '')} />
                               <ErrorMessage name="categories" component="div" className="invalid-feedback" />
-                          </div>
-                          <div className="form-group">
-                              <label htmlFor="startDate">Start date</label>
-                              <Field name="startDate" type="date" className={'form-control' + (errors.startDate && touched.startDate ? ' is-invalid' : '')} />
-                              <ErrorMessage name="startDate" component="div" className="invalid-feedback" />
-                          </div>
-                          <div className="form-group">
-                              <label htmlFor="endDate">End date</label>
-                              <Field name="endDate" type="date" className={'form-control' + (errors.endDate && touched.endDate ? ' is-invalid' : '')} />
-                              <ErrorMessage name="endDate" component="div" className="invalid-feedback" />
                           </div>
 
                           <div className="form-group">

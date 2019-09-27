@@ -13,8 +13,7 @@ bid_amount: {
 }, {
    timestamps: true
 });
-Bids.belongsTo(Users);
-Bids.belongsTo(Items);
+
 
 //sequelize.sync().then(() => console.log('Db Connection OK, Bids Table Ready')).catch(err => console.log("DB Err Bids: ", err));
 

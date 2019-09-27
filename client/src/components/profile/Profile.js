@@ -4,6 +4,7 @@ import axios from "axios";
 import CreateAuction from "./CreateAuction";
 import ManageAuctions from "./ManageAuctions";
 import {Link,	Route,} from 'react-router-dom';
+import AuctionPage from './AuctionPage'
 //import { 	 Link	} from 'react-router-dom';
 export default class Profile extends Component {
 
@@ -12,26 +13,6 @@ export default class Profile extends Component {
     super(props);
 
   }
-
-/*
-  fetchUser() {
-      console.log(this.props);
-    axios
-      .get("http://localhost:9001/profile/user", { withCredentials: true })
-      .then(({data} )=> {
-    if ( data.status){
-          this.setState({username:data.users.username})
-          this.setState({aproved:data.users.aproved})
-          console.log(this.state);
-           this.setState({filtered: this.state.users})
-        }
-      })
-      .catch(error => {
-        console.log("check login error", error);
-      });
-  }
-*/
-
 
 render() {
  const {username, name, last_name, address, country, admin,have_messg, AFM,mail} =this.props.user
@@ -73,9 +54,21 @@ render() {
          />
          <Route
 
-           path={"/profile/manage"}
+          exact path={"/profile/manage"}
            render={props => (
              <ManageAuctions
+               {...props}
+               user={this.props.user}
+
+             />
+           )}
+
+         />
+         <Route
+
+           path={"/profile/manage/:itemId"}
+           render={props => (
+             <AuctionPage
                {...props}
                user={this.props.user}
 
