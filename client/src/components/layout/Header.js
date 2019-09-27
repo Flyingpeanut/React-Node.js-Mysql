@@ -19,14 +19,15 @@ function handleLogoutClick(props) {
 function Header(props) {
 
     const logged = props.loggedInStatus
+    const admin = false
   return (
     <header style={headerStyle}>
       <h1> <Link style={linkStyle} to="/">Bid World</Link></h1>
        <div style = {placedRight}>
       { logged &&
           <React.Fragment >
-            <Link style={linkStyle} to="/dashboard">Profile</Link>
-            <Link style={linkStyle} to="/protected">Hidden</Link>
+            {<Link style={linkStyle} to="/profile">Profile</Link>}
+            {<Link style={linkStyle} to="/protected">Admininstration</Link>}
             <Link style = {linkStyle} to="/" onClick={() => {handleLogoutClick(props)}}>Log Out</Link>
 
           </React.Fragment>

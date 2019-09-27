@@ -13,7 +13,9 @@ a {
   color: #333;
   text-decoration: none;
 }
-
+ul{
+    list-style: none;
+}
 .container {
   padding: 0 1rem;
 }
@@ -71,4 +73,41 @@ a {
 
 .react-switch-label:active .react-switch-button {
   width: 60px;
+}
+
+
+/*itemPage.js*/
+.itemPage{
+
+    width: 100%;
+}
+.itemHeader{
+      margin: 5% 15%;
+      width: 40%;
+}
+.itemBody{
+    display: flex;
+    flex-direction:row;
+    justify-content: center;
+
+     width: 100%;
+}
+.bidStatus h3{
+    background: grey;
+}
+.bidStatus{
+     margin: 5%;
+     padding: 3%;
+     border: 1px solid black;
+}
+.sellerInfo{
+     margin: 5% 15%;
+}
+.right{
+    margin: 0 70%;
+    background:blue;
+    color:white;
+    font-size:  1.3em;
+    text-decoration:  none;
+    padding: 8px,
 }

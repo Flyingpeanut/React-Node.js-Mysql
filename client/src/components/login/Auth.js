@@ -8,16 +8,16 @@ import {
 	} from 'react-router-dom';
 
 export default class Auth extends Component {
+
   constructor(props) {
     super(props);
-
-        this.handleSuccessfulAuth = this.handleSuccessfulAuth.bind(this);
+	this.handleSuccessfulAuth = this.handleSuccessfulAuth.bind(this);
   }
 
   handleSuccessfulAuth(data) {
     //  console.log(data);
     this.props.handleLogin(data);
-    this.props.history.push("/dashboard");
+    this.props.history.push("/");
   }
 
 

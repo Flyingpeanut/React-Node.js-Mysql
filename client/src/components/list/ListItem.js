@@ -1,46 +1,97 @@
-import React, { useState }  from 'react';
+import React, { Component }  from 'react';
 import Toggle from '../list/Toggle';
-import axios from 'axios';
+import  {Link} from 'react-router-dom'
 
-export const  ListItem = ({ item,liStyle,style2 }) => {
+export default class ListItem extends Component {
 
-    const [id, setId] = useState(item.id);
-    const [name, setName] = useState(item.name);
-    const [bids, setBids] = useState(item.num_of_bids);
-    const [desc, setDesc] = useState(item.description);
-    const [location, setLocation] = useState(item.location);
-    const [country, setCountry] = useState(item.country);
-    const [first_bid, setFirst_bid] = useState(item.first_bid);
-    const [buy_price, setbuy_price] = useState(item.buy_price);
-    const [curently, setcurently] = useState(item.curently);
-    const [userId, setUsedId] = useState(item.userId);
+    constructor(props) {
+        super(props);
+        this.state = {
+            bidPrice : -1,
+
+        }
+        console.log(this.props.loggedInStatus);
+        console.log(this.state);
+  }
 
 
-    return(
 
-        <li style={liStyle}>
-                        <div style={style2}>
-                            <h3>Id   : {id} </h3>
-                            <h3>Τίτλος   : {name}</h3>
-                            <h3>Τιμή   : {curently}</h3>
-                            <h3>Τιμή αγοράς: {buy_price}</h3>
+     render() {
+         const  {
+             id,
+             name,
+            // num_of_bids,
+             description,
+             location,
+             country,
+            // seller_rating,
+             buy_price,
+             curently,
+            // username,
+            // categories,
+         } = this.props.item
 
-                        </div>
-                        <Toggle>
-                         {({on, toggle}) => (
-                            <div>
-                                { on && (<div style={style2}>
-                                    <h3>Περιγραφή   : {desc}</h3>
-                                    <h3>Διεύθυνση   : {location}</h3>
-                                    <h3>Χώρα    : {country}</h3>
-                                </div>)}
-                                <button onClick={toggle}>
-                                {on ? 'Show less' : 'Show more'}
-                                </button>
-                            </div>
-                        )}
-                        </Toggle>
+        return(
+            <div>
+            <li style={styles.container}>
+                <div style={styles.header}>
+                    <h3>Τίτλος   : {name}</h3>
+                    <h3>Τρέχουσα Προσφορά   : {curently} €</h3>
 
-        </li>
-  )
+                    <div style={styles.header}>
+                        <Link style={styles.right} to={`/item/${id}`}> >> Το θέλω  </Link>
+                    </div>
+
+                </div>
+                <Toggle>
+                 {({on, toggle}) => (
+                    <div>
+                        { on && (<div style={styles.body}>
+                            <h3>Τιμή αγοράς : {buy_price} €</h3>
+                            <h4>Περιγραφή   : {description}</h4>
+                            <h4>Διεύθυνση   : {location}</h4>
+                            <h4>Χώρα    : {country}</h4>
+
+                        </div>)}
+                        <button onClick={toggle}>
+                        {on ? 'Λιγότερα' : 'Περισσότερα'}
+                        </button>
+                    </div>
+                )}
+                </Toggle>
+
+            </li>
+            </div>
+      )
+}
+}
+
+const styles = {
+    container:{
+        margin: '3% 12%',
+        fontSize: '0.9em',
+        size:'0.7em',
+        padding: 8,
+        backgroundColor: 'grey',
+
+        border: '1px solid black',
+    },
+    header:{
+        padding:  12,
+        fontSize: '0.9em',
+
+    },
+    body:{
+        padding:  12,
+        fontSize: '0.9em',
+
+    },
+    right:{
+        margin:'3% 70%',
+        background:'blue',
+        color:'white',
+        fontSize: '1.3em',
+        textDecoration: 'none',
+        padding: '8px',
+    }
 }

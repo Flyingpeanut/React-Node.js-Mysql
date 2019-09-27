@@ -38,16 +38,21 @@ const Items = sequelize.define('items', {
     type: Sequelize.BOOLEAN,
     allowNull: false,
     defaultValue: false
-  },started: {
+   },started: {
+    type: Sequelize.DATE,
+    defaultValue: null,
+    },ended: {
+    type: Sequelize.DATE,
+    defaultValue: null,
+  },finished: {
     type: Sequelize.BOOLEAN,
     allowNull: false,
     defaultValue: false
-    }
-},
- {
-     timestamps:true
- });
+  }
+},{
+   timestamps: true
+});
 Items.belongsTo(Users);
-//sequelize.sync().then(() => console.log('Db Connection OK, Items Table Ready')).catch(err => console.log("DB Err Items: ", err));
+sequelize.sync().then(() => console.log('Db Connection OK, Items Table Ready')).catch(err => console.log("DB Err Items: ", err));
 
 module.exports = Items;

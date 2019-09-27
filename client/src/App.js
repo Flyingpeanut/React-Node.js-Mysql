@@ -10,8 +10,8 @@ import Home from './components/Home';
 import Dashboard from "./components/Dashboard";
 import Search from "./components/Search";
 import AdminPage from "./components/protectedRoute/AdminPage"
-import UserProfile from "./components/protectedRoute/UserProfile"
-
+import ItemPage from "./components/ItemPage"
+import Profile from "./components/profile/Profile"
 import {PrivateRoute} from "./components/protectedRoute/PrivateRoute"
 import {NotAuthenticatedRoute} from "./components/protectedRoute/NotAuthenticatedRoute"
 
@@ -27,7 +27,14 @@ class App extends Component {
 
       this.state = {
         loggedInStatus: false,
-        user: {}
+		user:	{
+				id:'',
+				username:'',
+				admin:'',
+				aproved:'',
+				have_messg:'',
+			}
+
       };
 
       this.handleLogin = this.handleLogin.bind(this);
@@ -38,22 +45,21 @@ class App extends Component {
       axios
         .get("http://localhost:9001/auth/login", { withCredentials: true })
         .then(response => {
-			console.log(response);
 		  if (
             response.data.logged_in &&
             this.state.loggedInStatus === false
           ) {
             this.setState({
-              loggedInStatus: true,
-              user: response.data.user
+              	loggedInStatus: true,
+			  	user:response.data.user
             });
           } else if (
             !response.data.logged_in &
             (this.state.loggedInStatus === true)
           ) {
             this.setState({
-              loggedInStatus: false,
-              user: {}
+              	loggedInStatus: false,
+			  	user:response.data.user
             });
           }
         })
@@ -64,6 +70,7 @@ class App extends Component {
 
     componentDidMount() {
       this.checkLoginStatus();
+
     }
 
     handleLogout() {
@@ -73,11 +80,11 @@ class App extends Component {
         loggedInStatus: false,
         user: {}
       });
-	  this.props.history.push("/");
-
+	  //this.props.history.push("/");
     }
 
     handleLogin(data) {
+
 		if (data.logged_in) {
 			this.setState({
 			  loggedInStatus: true,
@@ -119,31 +126,33 @@ class App extends Component {
 									   loggedInStatus = {this.state.loggedInStatus}/>
 								  )}
 							  />
-							  <Route
-				                exact
-				                path={"/dashboard"}
-				                render={props => (
-				                  <Dashboard
-				                    {...props}
-									 handleLogin={this.handleLogin}
-				                    loggedInStatus={this.state.loggedInStatus}
-				                  />
-				                )}
-				              />
+
+							  <Route exact path="/item/:itemId"
+							  		render={(props) => (
+  									  <ItemPage {... props}
+  									   loggedInStatus = {this.state.loggedInStatus}/>
+  								  )} />
+
 							  <NotAuthenticatedRoute
 							    path='/auth'
 							  	component={Auth}
 								handleLogin={this.handleLogin}
 								loggedInStatus = {this.state.loggedInStatus}
 									 />
-								 )}
+
  							 />
 							 <PrivateRoute
 							   path='/protected'
 							   component = {AdminPage}
+							   user = {this.state.user}
 							   loggedInStatus = {this.state.loggedInStatus}
 							  />
-
+							  <PrivateRoute
+								  path='/profile'
+								  component = {Profile}
+								  user = {this.state.user}
+								  loggedInStatus = {this.state.loggedInStatus}
+							 />
 							<Route
 							  path='*'
 							  component = {() => "404 NOT FOUND"}

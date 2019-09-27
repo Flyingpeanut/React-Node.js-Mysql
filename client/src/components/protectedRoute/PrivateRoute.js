@@ -11,7 +11,11 @@ export const PrivateRoute = ({ component: Component, ...rest }) => {
   <Route {...rest} render={(props) => (
 
     rest.loggedInStatus === true
-      ? <Component {...props} />
+      ? <Component
+	  {...props}
+	  user={rest.user}
+	  loggedInStatus = {rest.loggedInStatus}
+	  />
       : <Redirect to='/auth/login' />
 
  )} />

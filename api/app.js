@@ -23,6 +23,7 @@ const indexRouter = require('./routes/index');
 const authentication = require("./routes/authentication");
 const protected = require('./routes/protected')
 const search = require('./routes/search')
+const profile = require('./routes/profile')
 
 const app = express();
 
@@ -76,6 +77,7 @@ app.use('/', indexRouter);
 app.use("/auth", authentication);
 app.use("/protected", protected);
 app.use("/search", search);
+app.use("/profile", profile);
 
 
 // catch 404 and forward to error handler
