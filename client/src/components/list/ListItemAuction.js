@@ -65,8 +65,7 @@ export default class ListItemAuction extends Component {
             this.setState({message: 'End date should be before valid start date'})
             return
         }
-        if (!this.confirmation('  Υπενθύμιση με την αρχικοποίηση ημερομηνίων ξεκινάει\
-         επίσημα η δημοπρασία και δεν μπορεί να αλλάξει μετά')){
+        if (!this.confirmation('  Υπενθύμιση με την αρχικοποίηση ημερομηνίων ξεκινάει επίσημα η δημοπρασία και δεν μπορεί να αλλάξει μετά')){
             return console.log('nope');
         }
         axios.post(`http://localhost:9001/profile/manage/${id}`, {

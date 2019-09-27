@@ -91,8 +91,7 @@ export default class ItemPage extends Component {
 
                 const {buy_price, description, first_bid, itemName, startDate, endDate} = fields
                 const {itemId} = this.props.match.params
-                if (!this.confirmation('Είστε σίγουρος για τις αλλαγές;\
-                 Υπενθύμιση με την αρχικοποίηση ημερομηνίων ξεκινάει επίσημα η δημοπρασία και δεν μπορεί να αλλάξει μετά')){
+                if (!this.confirmation('Είστε σίγουρος για τις αλλαγές; Υπενθύμιση με την αρχικοποίηση ημερομηνίων ξεκινάει επίσημα η δημοπρασία και δεν μπορεί να αλλάξει μετά')){
                     return console.log('nope');
                 }
                axios.post(`http://localhost:9001/profile/manage/${itemId}`, {

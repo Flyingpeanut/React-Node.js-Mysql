@@ -3,46 +3,12 @@ import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import axios from "axios";
 import { 	 Link	} from 'react-router-dom';
-import CreatableSelect from 'react-select/creatable';
-import MySelect from '../list/MultiSelect'
-
-
-function createOption(label){
-    return {
-        label,
-        value:label.toLowerCase().replace(/\W/g, ''),
-    }
-}
 
 
 export default class CreateAuction extends React.Component {
 
-    state = {
-        isLoading:false,
-        options: this.testOptions,
-    }
-    testOptions = [
-        createOption('whatver'),
-        createOption('123341 1312'),
-        createOption('exampl'),
-    ]
 
-    handleCreate (inputValue) {
-        console.log(inputValue);
-    //    this.setState({ isLoading: true });
-
-      const { multiValue, options } = this.state;
-      const newOption = createOption(inputValue);
-      console.log(newOption);
-      this.setState({
-              options: [...options, newOption],
-
-      });
-
-      console.log(this.state);
-  };
   render() {
-      const { isLoading, options, value } = this.state;
       return (
 
           <Formik

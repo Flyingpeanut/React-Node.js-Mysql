@@ -161,8 +161,13 @@ router.post('/itemBid', ensureAuthenticated,function(req, res, next) {
     const {itemId, bidPrice} = req.body
     let curDate = new Date();
     Items.findAll({
-        where: {id:itemId,finished:false,ended:{[Op.gt]: curDate}, started:{[Op.ne]: null},curently:{[Op.lt]: bidPrice}}
-    }).then( result =>{
+        where: {id:itemId,
+                finished:false,
+                ended:{[Op.gt]: curDate},
+                started:{[Op.ne]: null},
+                curently:{[Op.lt]: bidPrice},
+                userId:{[Op.ne]: id
+            }}}).then( result =>{
             //not valid input
             if (!result) {
                 return res.send({status: false})
@@ -193,8 +198,12 @@ router.post('/itemBuy', ensureAuthenticated, function(req, res, next) {
     const {itemId} = req.body
     let curDate = new Date();
     Items.findAll({
-        where: {id:itemId,ended:{[Op.gt]: curDate}, started:{[Op.ne]: null},finished:false,userId:{[Op.ne]: id}}
-    }).then( result =>{
+        where: {id:itemId,
+            ended:{[Op.gt]: curDate},
+            started:{[Op.ne]: null},
+            finished:false,
+            userId:{[Op.ne]: id
+    }}}).then( result =>{
             //not valid input
             if (!result) {
                 return res.send({status: false})

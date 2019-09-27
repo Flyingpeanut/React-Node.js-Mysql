@@ -76,9 +76,22 @@ ul{
 .react-switch-label:active .react-switch-button {
   width: 60px;
 }
+/*
+ListItemBid
+*/
+.bidInfo{
+    margin: 5% 2% ;
+    width: 25%;
+    border: 1px solid black;
+    display: inline-block;
+}
 
-
-/*itemPage.js*/
+.bidInfo label{
+    margin: 3% 8%;
+}
+/*
+itemPage.js
+*/
 .itemPage{
 
     width: 100%;

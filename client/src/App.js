@@ -7,7 +7,6 @@ import { BrowserRouter as Router,
 import Header from './components/layout/Header';
 import Auth from './components/login/Auth';
 import Home from './components/Home';
-import Dashboard from "./components/Dashboard";
 import Search from "./components/Search";
 import AdminPage from "./components/protectedRoute/AdminPage"
 import ItemPage from "./components/ItemPage"

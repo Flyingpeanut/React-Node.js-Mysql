@@ -45,7 +45,8 @@ export default class Home extends Component {
           return []
       }
       let tempFiltered = items;
-      for (const [filterKey, filterValue] of Object.entries(filters)) {
+      //eslint-disable-next-line
+      for (let [filterKey, filterValue] of Object.entries(filters)) {
         if(filterValue === undefined)   continue;
         tempFiltered = tempFiltered.filter( (item)=>{
 

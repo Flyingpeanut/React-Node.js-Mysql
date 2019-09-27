@@ -2,7 +2,6 @@ import React from 'react';
 //import { Formik, Field, Form, ErrorMessage } from 'formik';
 //import * as Yup from 'yup';
 import axios from "axios";
-import { 	 Link	} from 'react-router-dom';
 import './profile.css';
 import ListLiveAuction from '../list/ListLiveAuction'
 
@@ -45,7 +44,6 @@ export default class ManageAuctions extends React.Component {
 
  }
 
-
   render() {
       const {loaded,auctions,message} =this.state
       return (
@@ -64,22 +62,4 @@ export default class ManageAuctions extends React.Component {
       </React.Fragment>
       );
     }
-}
-
-
-
-const btnStyle = {
-  //background: '#ff0000',
-  color: '#fff',
-  border: 'none',
-  padding: '5px 9px',
-  borderRadius: '50%',
-  cursor: 'pointer',
-  float: 'left'
-}
-
-const linkStyle = {
-  color: '#fff',
-  textDecoration: 'none',
-  margin: '8px',
 }

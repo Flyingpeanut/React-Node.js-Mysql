@@ -201,24 +201,30 @@ router.get('/fetch/startedAuction/:itemId',ensureAuthenticated, (req, res) => {
     const {id} = req.user;
     console.log(id, itemId);
     let curDate = new Date()
-    Middle.findAll({
+    Items.findAll({
+        where:{
+            id:itemId,
+            userId:id,
+            finished:false,
+            ended:{[Op.gt]: curDate},
+            started:{[Op.ne]: null},
+        },
         include:[{
-            model: Items,
+            model: Bids,
             required:true,
-            where:{id:itemId, userId:id, finished:false,ended:{[Op.gt]: curDate}, started:{[Op.ne]: null}, },
             include:[{
                 model: User,
                 required:true,
             }]
         },
-        {
-            model: Categories,
-            required:true
-        },
+
     ]})
     .then((itemsInfo) => {
+        console.log(itemsInfo);
         // reformat data from query
-
+        if (!itemsInfo) {
+                res.send({status:false, item:[],msg:'Nothing found'})
+        }
 
         res.send({status:true, item:itemsInfo})
     })

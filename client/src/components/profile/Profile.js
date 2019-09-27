@@ -1,23 +1,15 @@
 import React, { Component } from "react";
-import axios from "axios";
-//import Register from "./Register";
 import CreateAuction from "./CreateAuction";
 import ManageAuctions from "./ManageAuctions";
 import {Link,	Route,} from 'react-router-dom';
 import AuctionPage from './AuctionPage'
 import LiveAuctions from './LiveAuctions'
+import LiveAuctionPage from './LiveAuctionPage'
 
-//import { 	 Link	} from 'react-router-dom';
 export default class Profile extends Component {
 
-  constructor(props) {
-
-    super(props);
-
-  }
-
 render() {
- const {username, name, last_name, address, country, admin,have_messg, AFM,mail} =this.props.user
+ const {username, name, last_name, address, country, mail} =this.props.user
   return (
     <div>
     <h1>Καλώς ηρθάτε {username} </h1>
@@ -81,6 +73,18 @@ render() {
          />
          <Route
 
+           path={"/profile/liveAuctions/:itemId"}
+           render={props => (
+             <LiveAuctionPage
+               {...props}
+               user={this.props.user}
+
+             />
+           )}
+
+         />
+         <Route
+
            path={"/profile/manage/:itemId"}
            render={props => (
              <AuctionPage
@@ -98,20 +102,6 @@ render() {
   }
 }
 
-
-const placedRight = {
-  background: '#333',
-  color: '#fff',
-  margin: '0 70%',
-  width: '20%',
-}
-
-const headerStyle = {
-  background: '#333',
-  color: '#fff',
-  textAlign: 'center',
-  padding: '6px'
-}
 
 const linkStyle = {
     color: '#000',
